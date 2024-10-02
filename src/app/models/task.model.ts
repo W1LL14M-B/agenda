@@ -6,5 +6,5 @@ export interface Task {
     title: string;
     description: string;
     completed: boolean;
-    people: Person[];  // Lista de personas asociadas a la tarea
+    people: Person[];  
   }
