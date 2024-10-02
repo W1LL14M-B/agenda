@@ -24,6 +24,11 @@
       <input id="fullName-{{personIndex}}" formControlName="fullName" class="form-control w-50 rounded"
         placeholder="Nombre completo">
 
+      <div *ngIf="person.get('fullName')?.invalid && person.get('fullName')?.touched" class="text-danger">
+        <div *ngIf="person.get('fullName')?.hasError('required')">El nombre es obligatorio.</div>
+        <div *ngIf="person.get('fullName')?.hasError('minlength')">El nombre debe tener al menos 5 caracteres.</div>
+      </div>
+
 
       <label for="age-{{personIndex}}" class="form-label">Edad:</label>
       <input id="age-{{personIndex}}" type="number" formControlName="age" class="form-control w-50 rounded"
@@ -52,7 +57,9 @@
         habilidad</button>
       <button type="button" class="btn btn-danger my-1" (click)="removePerson(personIndex)">Eliminar persona</button>
     </div>
-
+    <div *ngIf="people.errors?.['duplicateNames']" class="text-danger">
+      Los nombres de las personas no pueden repetirse.
+    </div>
 
   </div>
 

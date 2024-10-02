@@ -1,7 +1,7 @@
 
 
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators,AbstractControl, ValidatorFn  } from '@angular/forms';
 import { Task } from './models/task.model';
 import { Person } from './models/person.model';
 
@@ -21,7 +21,8 @@ export class AppComponent {
     this.taskForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
-      people: this.fb.array([]), // Arreglo para agregar personas
+      people: this.fb.array([], this.uniqueNamesValidator()) // Validación para nombres únicos
+      //people: this.fb.array([]),  Arreglo para agregar personas
     });
   }
 
@@ -30,20 +31,31 @@ export class AppComponent {
     return this.taskForm.get('people') as FormArray;
   }
 
+    // Validación personalizada: verifica que los nombres no se repitan
+    uniqueNamesValidator(): ValidatorFn {
+      return (formArray: AbstractControl) => {
+        const names = formArray.value.map((person: any) => person.fullName.trim().toLowerCase());
+        const hasDuplicates = names.some((name: string, index: number) => names.indexOf(name) !== index);
+        return hasDuplicates ? { duplicateNames: true } : null;
+      };
+    }
+
   // Agregar una persona al formulario
   addPerson() {
     const personForm = this.fb.group({
-      fullName: ['', Validators.required],
+      fullName: ['', [Validators.required, Validators.minLength(5)]], // Obligatorio y mínimo 5 caracteres
       age: [0, [Validators.required, Validators.min(1)]],
-
-      skills: this.fb.array([])
+      skills: this.fb.array([]) // Habilidades vacías
     });
+
     this.people.push(personForm);
+    this.people.updateValueAndValidity(); // Actualiza la validez del formulario
   }
 
   // Eliminar una persona del formulario
   removePerson(index: number) {
     this.people.removeAt(index);
+    this.people.updateValueAndValidity(); // Actualiza la validez del formulario
   }
 
   // Devuelve el FormArray de habilidades de una persona específica
