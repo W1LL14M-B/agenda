@@ -1,1 +1,95 @@
-<h1>Agenda</h1>
+<!-- <h1 class="text-center my-4">{{ title }}</h1>
+
+<form [formGroup]="taskForm" (ngSubmit)="createTask()" class="mb-4">
+  <div class="mb-3">
+    <label for="title" class="form-label">Título:</label>
+    <input id="title" formControlName="title" class="form-control" placeholder="Ingresa el título de la tarea">
+    <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="text-danger">
+      El título es requerido
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="description" class="form-label">Descripción:</label>
+    <textarea id="description" formControlName="description" class="form-control" placeholder="Ingresa una descripción"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">Crear tarea</button>
+</form>
+
+<h2 class="my-4">Lista de tareas</h2>
+<ul class="list-group">
+  <li *ngFor="let task of tasks" class="list-group-item d-flex justify-content-between align-items-center">
+    <div>
+      <h5 class="mb-1">{{ task.title }}</h5>
+      <p class="mb-1">{{ task.description }}</p>
+      <small class="text-muted">{{ task.completed ? 'Completada' : 'Pendiente' }}</small>
+    </div>
+
+  <button class="btn btn-sm btn-outline-success" (click)="toggleTaskCompletion(task)">
+    {{ task.completed ? 'Desmarcar' : 'Completar' }}
+  </button>
+  </li>
+</ul>
+
+ -->
+
+ <h1 class="text-center my-4">{{ title }}</h1>
+
+<form [formGroup]="taskForm" (ngSubmit)="createTask()" class="mb-4">
+  <div class="mb-3">
+    <label for="title" class="form-label">Título:</label>
+    <input id="title" formControlName="title" class="form-control w-50 rounded" placeholder="Ingresa el título de la tarea">
+    <div *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched" class="text-danger">
+      El título es requerido
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="description" class="form-label">Descripción:</label>
+    <textarea id="description" formControlName="description" class="form-control" placeholder="Ingresa una descripción"></textarea>
+  </div>
+
+  <h3>Personas asignadas</h3>
+  <div formArrayName="people">
+    <div *ngFor="let person of people.controls; let i = index" [formGroupName]="i" class="mb-3">
+      <label for="fullName-{{i}}" class="form-label">Nombre completo:</label>
+<!--       <input id="fullName-{{i}}" formControlName="fullName" class="form-control" placeholder="Nombre completo"> -->
+      <input id="fullName-{{i}}" formControlName="fullName" class="form-control w-50 rounded" placeholder="Nombre completo">
+
+
+      <label for="age-{{i}}" class="form-label">Edad:</label>
+      <input id="age-{{i}}" type="number" formControlName="age" class="form-control" placeholder="Edad">
+
+      <label for="skills-{{i}}" class="form-label">Habilidades (separadas por comas):</label>
+      <input id="skills-{{i}}" formControlName="skills" class="form-control" placeholder="Habilidades">
+
+      <button type="button" class="btn btn-danger mt-2" (click)="removePerson(i)">Eliminar persona</button>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-secondary my-3 m-4" (click)="addPerson()">Agregar persona</button>
+
+  <button type="submit" class="btn btn-primary my-1" [disabled]="taskForm.invalid">Crear tarea</button>
+</form>
+
+<h2 class="my-4">Lista de tareas</h2>
+<ul class="list-group">
+  <li *ngFor="let task of tasks" class="list-group-item d-flex justify-content-between align-items-center"
+      [ngClass]="{'completed-task': task.completed}">
+    <div>
+      <h5 class="mb-1">{{ task.title }}</h5>
+      <p class="mb-1">{{ task.description }}</p>
+      <p class="mb-1"><strong>Personas:</strong></p>
+      <ul>
+        <li *ngFor="let person of task.people">
+          <strong>{{ person.fullName }}</strong> - {{ person.age }} años - Habilidades: {{ person.skills.join(', ') }}
+        </li>
+      </ul>
+      <small class="text-muted">{{ task.completed ? 'Completada' : 'Pendiente' }}</small>
+    </div>
+    <button class="btn btn-sm btn-outline-success" (click)="toggleTaskCompletion(task)">
+      {{ task.completed ? 'Desmarcar' : 'Completar' }}
+    </button>
+  </li>
+</ul>
