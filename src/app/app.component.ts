@@ -1,10 +1,14 @@
-
-
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators,AbstractControl, ValidatorFn  } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators,
+  AbstractControl,
+  ValidatorFn,
+} from '@angular/forms';
 import { Task } from './models/task.model';
 import { Person } from './models/person.model';
-
 
 @Component({
   selector: 'app-root',
@@ -21,7 +25,7 @@ export class AppComponent {
     this.taskForm = this.fb.group({
       title: ['', Validators.required],
       description: [''],
-      people: this.fb.array([], this.uniqueNamesValidator()) // Validación para nombres únicos
+      people: this.fb.array([], this.uniqueNamesValidator()), // Validación para nombres únicos
       //people: this.fb.array([]),  Arreglo para agregar personas
     });
   }
@@ -31,25 +35,31 @@ export class AppComponent {
     return this.taskForm.get('people') as FormArray;
   }
 
-    // Validación personalizada: verifica que los nombres no se repitan
-    uniqueNamesValidator(): ValidatorFn {
-      return (formArray: AbstractControl) => {
-        const names = formArray.value.map((person: any) => person.fullName.trim().toLowerCase());
-        const hasDuplicates = names.some((name: string, index: number) => names.indexOf(name) !== index);
-        return hasDuplicates ? { duplicateNames: true } : null;
-      };
-    }
+  // Validación personalizada: verifica que los nombres no se repitan
+  uniqueNamesValidator(): ValidatorFn {
+    return (formArray: AbstractControl) => {
+      const names = formArray.value.map((person: any) =>
+        person.fullName.trim().toLowerCase()
+      );
+      const hasDuplicates = names.some(
+        (name: string, index: number) => names.indexOf(name) !== index
+      );
+      return hasDuplicates ? { duplicateNames: true } : null;
+    };
+  }
 
   // Agregar una persona al formulario
   addPerson() {
     const personForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(5)]], // Obligatorio y mínimo 5 caracteres
-      age: [0, [Validators.required, Validators.min(1)]],
-      skills: this.fb.array([]) // Habilidades vacías
+      age: [null, [Validators.required, Validators.min(18)]], // Edad mayor a 18
+      skills: this.fb.array([]), 
     });
 
     this.people.push(personForm);
     this.people.updateValueAndValidity(); // Actualiza la validez del formulario
+
+
   }
 
   // Eliminar una persona del formulario
@@ -64,9 +74,12 @@ export class AppComponent {
   }
 
   // Añadir una habilidad a la persona
+
   addSkill(personIndex: number) {
     const skillsArray = this.getSkills(personIndex);
     skillsArray.push(this.fb.control('', Validators.required));
+
+    this.people.updateValueAndValidity(); // Asegúrate de que el formulario esté actualizado
   }
 
   // Eliminar una habilidad de la persona
@@ -85,7 +98,7 @@ export class AppComponent {
       people: this.taskForm.value.people.map((person: any) => ({
         fullName: person.fullName,
         age: person.age,
-        skills: person.skills
+        skills: person.skills,
       })),
     };
 
@@ -99,23 +112,24 @@ export class AppComponent {
   }
 
   // Agregar una persona a una tarea existente
+
   addPersonToTask(task: Task) {
-    const newPerson: Person = {
-      fullName: 'Nueva Persona',
-      age: 30,
-      skills: ['Nueva habilidad']
-    };
+    const peopleFormArray = this.taskForm.get('people') as FormArray;
 
-    task.people.push(newPerson);
+    // Iteramos sobre el FormArray de personas para agregar cada una a la tarea
+    peopleFormArray.controls.forEach((personControl: AbstractControl) => {
+      const newPerson: Person = {
+        fullName: personControl.get('fullName')?.value,
+        age: personControl.get('age')?.value,
+        skills: personControl.get('skills')?.value || [],
+      };
 
-
+      task.people.push(newPerson);
+    });
   }
 
   // Eliminar una persona de una tarea existente
   removePersonFromTask(task: Task, index: number) {
     task.people.splice(index, 1);
   }
-
-
-
 }

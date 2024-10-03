@@ -35,7 +35,10 @@
         placeholder="Edad">
 
 
-
+        <div *ngIf="person.get('age')?.invalid && person.get('age')?.touched" class="text-danger">
+          <div *ngIf="person.get('age')?.hasError('required')">La edad es obligatoria.</div>
+          <div *ngIf="person.get('age')?.hasError('min')">La edad debe ser mayor de 18 años.</div>
+        </div>
 
 
 
@@ -70,7 +73,7 @@
 
 <h2 class="my-4">Lista de tareas</h2>
 <ul class="list-group">
-  <li *ngFor="let task of tasks" class="list-group-item d-flex justify-content-between align-items-center"
+  <li *ngFor="let task of tasks" class="list-group-item d-flex justify-content-between align-items-center w-50 rounded"
     [ngClass]="{'completed-task': task.completed}">
     <div>
       <h5 class="mb-1">{{ task.title }}</h5>
@@ -86,11 +89,11 @@
         </li>
       </ul>
 
-      <button class="btn btn-sm btn-outline-secondary mt-2" (click)="addPersonToTask(task)">Agregar persona</button>
+      <button class="btn btn-sm btn-outline-secondary my-3 m-4" (click)="addPersonToTask(task)">Agregar persona</button>
       <small class="text-muted">{{ task.completed ? 'Completada' : 'Pendiente' }}</small>
 
     </div>
-    <button class="btn btn-sm btn-outline-success" (click)="toggleTaskCompletion(task)">
+    <button class="btn btn-sm btn-outline-success my-1" (click)="toggleTaskCompletion(task)">
       {{ task.completed ? 'Desmarcar' : 'Completar' }}
     </button>
   </li>
