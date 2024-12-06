@@ -22,3 +22,6 @@ form {
     padding: 10px;
   }
   
+  .label-spacing {
+    margin-right: 6rem; /* Cambia este valor para ajustar la separación */
+  }
