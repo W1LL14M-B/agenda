@@ -48,11 +48,18 @@
 
       <h4>Habilidades</h4>
       <div formArrayName="skills">
-        <div *ngFor="let skill of getSkills(personIndex).controls; let skillIndex = index">
-          <input [formControlName]="skillIndex" class="form-control mb-2" placeholder="Habilidad">
+        <div *ngFor="let skill of getSkills(personIndex).controls; let skillIndex = index" class="skill-container">
+          <input 
+          [formControlName]="skillIndex" 
+          class="form-control mb-2 skill-input" 
+          placeholder="Habilidad"
+          >
 
-          <button type="button" class="btn btn-danger btn-sm mb-2"
-            (click)="removeSkill(personIndex, skillIndex )">Eliminar
+          <button 
+          type="button"
+          class="btn btn-danger btn-sm mb-2 skill-button"
+          (click)="removeSkill(personIndex, skillIndex )"
+          >Eliminar
             habilidad</button>
         </div>
       </div>

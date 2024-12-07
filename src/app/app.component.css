@@ -25,3 +25,16 @@ form {
   .label-spacing {
     margin-right: 6rem; /* Cambia este valor para ajustar la separación */
   }
+  .skill-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaciado entre el input y el botón */
+  }
+  
+  .skill-input {
+    flex: 1; /* Asegura que el input tome el espacio necesario */
+  }
+  
+  .skill-button {
+    flex-shrink: 0; /* El botón mantiene su tamaño */
+  }
